@@ -266,7 +266,13 @@ function App() {
       {winner && (
         <div className="winner-popup">
           <div className="winner-content">
-            <h2 className="winner-text">🎉 {winner} Wins! 🎉</h2>
+            {/* If winner is Draw, show "Draw" */}
+            {winner === "Draw" ? (
+              <h2 className="winner-text">🎉 Draw! 🎉</h2>
+            ) : (
+              // If winner is X or O, show "X Wins!" or "O Wins!"
+              <h2 className="winner-text">🎉 {winner} Wins! 🎉</h2>
+            )}
             <div className="confetti"></div>
           </div>
         </div>
