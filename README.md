@@ -29,6 +29,7 @@ npm install
 npm start
 The app will run at: http://localhost:3000
 
+Or go to this link: https://naver-assignment1.vercel.app/
 
 🕹️ Game Rules
 
