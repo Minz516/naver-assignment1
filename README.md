@@ -1,52 +1,100 @@
+# 🎮 Tic-Tac-Toe
+
+**Author:** Tran Hoang Minh  
+**Language:** JavaScript (ReactJS)  
+
 ---
-author: Dua Tran
-title: Rock-Paper-Scissor game
-id: tic-tac-toe_game_trancaodua
+
+## 🧩 Introduction
+
+**Tic-Tac-Toe** is the classic 3x3 grid game where two players take turns marking spaces with **X** or **O**.  
+The goal is to be the first to get **three in a row** horizontally, vertically, or diagonally.
+
+This project is built using **ReactJS**, featuring a clean UI and two gameplay modes:
+- **Play with Friends:** Two players take turns on the same device.  
+- **Play with AI:** Challenge the computer with adjustable difficulty levels.
+
 ---
 
-# Tic Tac Toe Game
+## ⚙️ How to Run
+
+```bash
+# 1️⃣ Move into the project folder
+cd naver-assignment1
+
+# 2️⃣ Install dependencies (if not already installed)
+npm install
+
+# 3️⃣ Start the development server
+npm start
+The app will run at: http://localhost:3000
 
 
+🕹️ Game Rules
 
-Props are one of the most basic and important properties in React.
-The purpose of this project is to practice our skills with React props.
+The board consists of 9 cells (3x3).
 
-Let's create a mini "Tic Tac Toe" game to play with family and friends.
+Players take turns placing their marks:
 
-| ![](https://i.ibb.co/7kxyMb4/Screenshot-from-2022-05-12-01-32-13.png) |
-| :-------------------------------------------------------------------: |
-|                      _ Tic Tac Toe_                      |
+Player 1: X
 
-[Go to demo website !](https://tic-tac-toe-game-trancaodua.netlify.app/)
+Player 2 (or AI): O
 
-## User Story
+The first player to align three symbols in a row (horizontally, vertically, or diagonally) wins.
 
-- Has two player "X" and "O".
-- Every player turns tick "X" or "O" on square.
-- Player has 3 ("X" or "O") consecutive is winner.
-- Click "Restart" to restart game.
-- :rocket: Storing a history of moves.
-- :rocket::rocket::rocket: Player can undo move.
+If all cells are filled and no one wins → Draw.
 
-## Requirement
+🧠 Game Modes
+👥 1. Play with Friends
 
-Fork this [repo](https://github.com/trancaodua/tic-tac-toe-game) and read through the files.
-Often time , developers are required to work with an existing codebase and improve upon. This is one of that time. 
+Two human players on the same computer.
 
-Repositories has 3 branch:
-- Requirements: Has requirements. You will code on this branch.
-- Solution: Has answers of requirements.
-- Advance solution: Has :rocket: answers of requirements.
+Turns alternate automatically after each move.
 
-Guide checkout ````requirements```` branch to code:
-- Step 1: Clone repositories. Run: ````git clone https://github.com/trancaodua/tic-tac-toe-game.git````
-- Step 2: Checkout requirement brank to do. Run: ````git checkout requirements````
+🤖 2. Play with AI
 
-Guide checkout ````solution```` branch to check answer:
-- Step 1: Checkout solution brank to do. Run: ````git checkout solution````
+You control X, and the AI plays as O.
 
-Guide checkout ````advance_solution```` brank to check :rocket: answer:
-- Step 1: Checkout solution brank to do. Run: ````git checkout advance_solution````
+Choose between two difficulty levels:
 
-You should only code in the designinated area.
-Using the VSC search function for "Your code here", you will see a list of all the placces that required your attention.
+🟢 Easy Mode: AI plays casually and may let you win.
+
+🔴 Hard Mode: AI uses the Minimax algorithm with Alpha-Beta pruning for optimal moves.
+
+✨ Game Features
+🎯 Score Tracking
+
+Tracks wins / losses / draws across multiple games.
+
+Displays your current winning streak.
+
+Persists data using localStorage so scores and history remain after page reload.
+
+⚡ Performance Metrics
+
+Displays the number of positions evaluated (for Hard mode).
+
+Shows AI “thinking time” in milliseconds.
+
+Updates metrics automatically after each AI move.
+
+💡 Additional Features
+
+🔒 Click-lock during AI turn: Player cannot make moves while the AI is thinking.
+
+🧾 Scrollable match history: View all past games with an easy scroll (no limit of 5).
+
+🧠 AI Debug Mode (console): Logs evaluation scores during AI’s decision-making process.
+
+🌈 Victory effects: Celebration popup and confetti when a player wins.
+
+🔄 Quick controls: Restart, change mode, or reset scores anytime.
+
+📸 Demo
+
+![Gameplay Preview](./public/images/screenshot.png)
+
+📜 License
+
+This project was created by Tran Hoang Minh for educational and demonstration purposes.
+Feel free to use, modify, and enhance it as you wish.
