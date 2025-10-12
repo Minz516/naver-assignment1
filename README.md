@@ -92,7 +92,7 @@ The app will run at: http://localhost:3000
 
 📸 Demo
 
-![Gameplay Preview](./public/demo.png)
+![Demo Screenshot](./demo.png)
 
 📜 License
 
