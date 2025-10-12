@@ -32,51 +32,51 @@ The app will run at: http://localhost:3000
 
 🕹️ Game Rules
 
-The board consists of 9 cells (3x3).
+    The board consists of 9 cells (3x3).
 
-Players take turns placing their marks:
+    Players take turns placing their marks:
 
-Player 1: X
+    Player 1: X
 
-Player 2 (or AI): O
+    Player 2 (or AI): O
 
-The first player to align three symbols in a row (horizontally, vertically, or diagonally) wins.
+    The first player to align three symbols in a row (horizontally, vertically, or diagonally) wins.
 
-If all cells are filled and no one wins → Draw.
+    If all cells are filled and no one wins → Draw.
 
 🧠 Game Modes
-👥 1. Play with Friends
+    👥 1. Play with Friends
 
-Two human players on the same computer.
+        Two human players on the same computer.
 
-Turns alternate automatically after each move.
+        Turns alternate automatically after each move.
 
-🤖 2. Play with AI
+    🤖 2. Play with AI
 
-You control X, and the AI plays as O.
+        You control X, and the AI plays as O.
 
-Choose between two difficulty levels:
+        Choose between two difficulty levels:
 
 🟢 Easy Mode: AI plays casually and may let you win.
 
 🔴 Hard Mode: AI uses the Minimax algorithm with Alpha-Beta pruning for optimal moves.
 
 ✨ Game Features
-🎯 Score Tracking
+    🎯 Score Tracking
 
-Tracks wins / losses / draws across multiple games.
+        Tracks wins / losses / draws across multiple games.
 
-Displays your current winning streak.
+        Displays your current winning streak.
 
-Persists data using localStorage so scores and history remain after page reload.
+        Persists data using localStorage so scores and history remain after page reload.
 
-⚡ Performance Metrics
+    ⚡ Performance Metrics
 
-Displays the number of positions evaluated (for Hard mode).
+        Displays the number of positions evaluated (for Hard mode).
 
-Shows AI “thinking time” in milliseconds.
+        Shows AI “thinking time” in milliseconds.
 
-Updates metrics automatically after each AI move.
+        Updates metrics automatically after each AI move.
 
 💡 Additional Features
 
