@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Board from "./components/Board.jsx";
 import { calculateWinner } from "./utils/gameLogic.js";
 import { getBestMove } from "./utils/ai.js";
@@ -28,6 +28,9 @@ function App() {
     lastWinner: null,
   });
 
+  // <-- NEW: track whether AI is currently thinking
+  const [aiThinking, setAiThinking] = useState(false);
+
   // Load scores from localStorage on component mount
   useEffect(() => {
     const savedScores = localStorage.getItem("ticTacToeScores");
@@ -53,6 +56,9 @@ function App() {
   // AI move logic
   useEffect(() => {
     if (!xIsNext && gameMode === "ai") {
+      // Mark AI as thinking immediately so player cannot click during AI's turn
+      setAiThinking(true); // <-- NEW
+
       // Add delay to make AI seem like it's thinking
       const aiDelay = Math.random() * 1000 + 500; // Random delay between 500ms to 1500ms
 
@@ -73,9 +79,15 @@ function App() {
           setSquares(newBoard);
           setXIsNext(true); // Switch back to player (X)
         }
+
+        // AI finished thinking
+        setAiThinking(false); // <-- NEW
       }, aiDelay);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        setAiThinking(false); // ensure flag cleared on unmount/cleanup
+      };
     }
   }, [xIsNext, gameMode, aiDifficulty, squares]);
 
@@ -99,41 +111,90 @@ function App() {
     let newScores = { ...scores };
     let newHistory = [...gameHistory];
 
-    if (winner === "X") {
-      newScores.xWins++;
-      newScores.currentStreak =
-        newScores.lastWinner === "X" ? newScores.currentStreak + 1 : 1;
-      newHistory.push({
-        gameNumber,
-        result: "X win",
-        opponent: gameMode === "friend" ? "O lose" : "AI lose",
-        timestamp,
-        mode: gameMode,
-        difficulty: gameMode === "ai" ? aiDifficulty : null,
-      });
-    } else if (winner === "O") {
-      newScores.oWins++;
-      newScores.currentStreak =
-        newScores.lastWinner === "O" ? newScores.currentStreak + 1 : 1;
-      newHistory.push({
-        gameNumber,
-        result: "O win",
-        opponent: gameMode === "friend" ? "X lose" : "Player lose",
-        timestamp,
-        mode: gameMode,
-        difficulty: gameMode === "ai" ? aiDifficulty : null,
-      });
-    } else if (winner === "Draw") {
-      newScores.draws++;
-      newScores.currentStreak = 0;
-      newHistory.push({
-        gameNumber,
-        result: "Draw",
-        opponent: "Tie",
-        timestamp,
-        mode: gameMode,
-        difficulty: gameMode === "ai" ? aiDifficulty : null,
-      });
+    // Streak handling specially for AI mode
+    if (gameMode === "ai") {
+      // In AI mode, only player (X) wins should increase streak.
+      if (winner === "X") {
+        newScores.xWins++;
+        newScores.currentStreak =
+          newScores.lastWinner === "X" ? newScores.currentStreak + 1 : 1;
+      } else if (winner === "O") {
+        newScores.oWins++;
+        // AI win: reset player's current streak (do NOT increment)
+        newScores.currentStreak = 0;
+      } else if (winner === "Draw") {
+        newScores.draws++;
+        newScores.currentStreak = 0;
+      }
+
+      // Record history entries
+      if (winner === "X") {
+        newHistory.push({
+          gameNumber,
+          result: "X win",
+          opponent: "AI lose",
+          timestamp,
+          mode: gameMode,
+          difficulty: aiDifficulty,
+        });
+      } else if (winner === "O") {
+        newHistory.push({
+          gameNumber,
+          result: "O win",
+          opponent: "Player lose",
+          timestamp,
+          mode: gameMode,
+          difficulty: aiDifficulty,
+        });
+      } else {
+        newHistory.push({
+          gameNumber,
+          result: "Draw",
+          opponent: "Tie",
+          timestamp,
+          mode: gameMode,
+          difficulty: aiDifficulty,
+        });
+      }
+
+    } else {
+      // Friend mode or other modes: original behavior (both human players)
+      if (winner === "X") {
+        newScores.xWins++;
+        newScores.currentStreak =
+          newScores.lastWinner === "X" ? newScores.currentStreak + 1 : 1;
+        newHistory.push({
+          gameNumber,
+          result: "X win",
+          opponent: "O lose",
+          timestamp,
+          mode: gameMode,
+          difficulty: null,
+        });
+      } else if (winner === "O") {
+        newScores.oWins++;
+        newScores.currentStreak =
+          newScores.lastWinner === "O" ? newScores.currentStreak + 1 : 1;
+        newHistory.push({
+          gameNumber,
+          result: "O win",
+          opponent: "X lose",
+          timestamp,
+          mode: gameMode,
+          difficulty: null,
+        });
+      } else if (winner === "Draw") {
+        newScores.draws++;
+        newScores.currentStreak = 0;
+        newHistory.push({
+          gameNumber,
+          result: "Draw",
+          opponent: "Tie",
+          timestamp,
+          mode: gameMode,
+          difficulty: null,
+        });
+      }
     }
 
     newScores.maxStreak = Math.max(
@@ -152,16 +213,27 @@ function App() {
 
   // Handle player move
   const handleClick = (i) => {
-    if (winner || squares[i]) {
+    // BLOCK clicks if:
+    // - there's already a winner
+    // - square is already filled
+    // - in AI mode and it's AI's turn (!xIsNext)
+    // - or AI is currently thinking
+    if (
+      winner ||
+      squares[i] ||
+      (gameMode === "ai" && !xIsNext) || // <-- prevent player clicking when it's AI's turn
+      aiThinking // <-- also prevent while aiThinking (extra safe)
+    ) {
       return;
     }
 
     // In friend mode, both X and O are human players
     // In AI mode, only X is human player
     const currentPlayer = xIsNext ? "X" : "O";
-    squares[i] = currentPlayer;
+    const newBoard = [...squares];
+    newBoard[i] = currentPlayer;
+    setSquares(newBoard);
     setXIsNext(!xIsNext);
-    setSquares([...squares]);
   };
 
   // Restart game
@@ -172,6 +244,7 @@ function App() {
     setGameEnded(false);
     setAiThinkingTime(0);
     setPositionsEvaluated(0);
+    setAiThinking(false); // <-- ensure cleared
   };
 
   // Select game mode
@@ -310,7 +383,12 @@ function App() {
       <div className="game-content">
         <div className="game-main">
           <div className="game">
-            <Board squares={squares} handleClick={handleClick} />
+            {/* Pass disableAll so board/squares can show disabled UI while AI is thinking */}
+            <Board
+              squares={squares}
+              handleClick={handleClick}
+              disableAll={gameMode === "ai" && (!xIsNext || aiThinking)} // <-- NEW prop
+            />
           </div>
 
           {/* Score Tracking */}
@@ -356,9 +434,13 @@ function App() {
         <div className="game-history-panel">
           <div className="game-history">
             <h3>Game History</h3>
-            <div className="history-list">
-              {gameHistory
-                .slice(-5)
+            {/* history-list is now scrollable and shows all items (not only last 5) */}
+            <div
+              className="history-list"
+              style={{ maxHeight: "240px", overflowY: "auto" }} // <-- NEW: scroll container
+            >
+              {[...gameHistory]
+                .slice()
                 .reverse()
                 .map((game, index) => (
                   <div key={game.gameNumber} className="history-item">

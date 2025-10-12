@@ -12,9 +12,18 @@ export const minimax = (
   positionCount.count++; // Count each position evaluated
 
   const winner = calculateWinner(board);
-  if (winner === "O") return 10 - depth;
-  if (winner === "X") return -10 + depth;
-  if (winner === "Draw") return 0;
+  if (winner === "O") {
+    console.log(`minimax leaf: winner O at depth ${depth} => score ${10 - depth}`);
+    return 10 - depth;
+  }
+  if (winner === "X") {
+    console.log(`minimax leaf: winner X at depth ${depth} => score ${-10 + depth}`);
+    return -10 + depth;
+  }
+  if (winner === "Draw") {
+    console.log(`minimax leaf: Draw at depth ${depth} => score 0`);
+    return 0;
+  }
 
   if (isMaximizing) {
     // AI turn
@@ -87,13 +96,19 @@ export const getBestMove = (
         Infinity,
         positionCount
       ); // next turn is player
+
+      // Logging each evaluated move and its score:
+      console.log(`AI evaluated move ${i} => score ${score}`);
+
       if (score > bestScore) {
         bestScore = score;
         move = i;
+        console.log(`AI best so far: move ${move} with score ${bestScore}`);
       }
     }
   }
 
+  console.log(`AI selecting move ${move} with bestScore ${bestScore}`);
   return move; // return the best index for AI to play
 };
 

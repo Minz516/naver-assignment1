@@ -1,9 +1,14 @@
 import React from "react";
 import Square from "./Square.jsx";
 
-export default function Board({ squares, handleClick }) {
+export default function Board({ squares, handleClick, disableAll = false }) {
   const squareComponents = squares.map((square, index) => (
-    <Square key={index} handleClick={() => handleClick(index)} value={square} />
+    <Square
+      key={index}
+      handleClick={() => handleClick(index)}
+      value={square}
+      disabled={disableAll || Boolean(square)} // disable if board requests or if occupied
+    />
   ));
   return (
     <div className="board">
