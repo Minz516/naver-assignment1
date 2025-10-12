@@ -92,7 +92,7 @@ Updates metrics automatically after each AI move.
 
 📸 Demo
 
-![Gameplay Preview](./public/images/screenshot.png)
+![Gameplay Preview](./public/demo.png)
 
 📜 License
 
